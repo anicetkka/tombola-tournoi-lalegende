@@ -7,6 +7,9 @@ require('dotenv').config();
 
 const app = express();
 
+// Configurer Express pour accepter les proxies (nécessaire pour Render)
+app.set('trust proxy', 1);
+
 // CORS doit être configuré AVANT helmet
 app.use(cors({
   origin: [
