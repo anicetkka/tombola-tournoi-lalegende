@@ -10,10 +10,15 @@ const app = express();
 // Middleware de sécurité
 app.use(helmet());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://tombolalalegende.web.app', 'https://tombolalalegende.firebaseapp.com', 'https://tournoi-legende.web.app'] 
-    : ['http://localhost:3000'],
-  credentials: true
+  origin: [
+    'https://tombolalalegende.web.app', 
+    'https://tombolalalegende.firebaseapp.com', 
+    'https://tournoi-legende.web.app',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate limiting

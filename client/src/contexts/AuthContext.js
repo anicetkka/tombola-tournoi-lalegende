@@ -153,7 +153,12 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: authActions.LOGIN_START });
       
+      console.log('🔐 Tentative de connexion avec:', credentials);
+      console.log('🌐 URL API:', API_BASE_URL);
+      
       const response = await api.post('/auth/login', credentials);
+      console.log('✅ Réponse de connexion:', response.data);
+      
       const { token, user } = response.data;
       
       localStorage.setItem('token', token);
@@ -167,6 +172,8 @@ export const AuthProvider = ({ children }) => {
       toast.success('Connexion réussie !');
       return { success: true };
     } catch (error) {
+      console.error('❌ Erreur de connexion:', error);
+      console.error('❌ Détails de l\'erreur:', error.response?.data);
       const message = error.response?.data?.message || 'Erreur de connexion';
       dispatch({ type: authActions.LOGIN_FAILURE });
       toast.error(message);

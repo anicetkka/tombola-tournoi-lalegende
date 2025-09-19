@@ -81,8 +81,6 @@ const RegisterPage = () => {
       newErrors.password = 'Le mot de passe est requis';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre';
     }
 
     // Validation de la confirmation du mot de passe
