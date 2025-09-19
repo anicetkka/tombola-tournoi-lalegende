@@ -92,12 +92,10 @@ app.use((err, req, res, next) => {
 // Export pour Vercel
 module.exports = app;
 
-// Démarrage local (seulement en développement)
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-    console.log(`📱 Environnement: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🌍 URL: http://localhost:${PORT}`);
-  });
-}
+// Démarrage du serveur
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Serveur démarré sur le port ${PORT}`);
+  console.log(`📱 Environnement: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌍 URL: http://localhost:${PORT}`);
+});
