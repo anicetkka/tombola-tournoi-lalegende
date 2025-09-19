@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext();
 
 // Configuration axios
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://tombola-backend-api.onrender.com/api';
 
 // Instance axios avec intercepteurs
 const api = axios.create({

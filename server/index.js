@@ -11,7 +11,7 @@ const app = express();
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://tombolalalegende.web.app', 'https://tombolalalegende.firebaseapp.com'] 
+    ? ['https://tombolalalegende.web.app', 'https://tombolalalegende.firebaseapp.com', 'https://tournoi-legende.web.app'] 
     : ['http://localhost:3000'],
   credentials: true
 }));
