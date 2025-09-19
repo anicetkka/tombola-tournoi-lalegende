@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Le numéro de téléphone est requis'],
     unique: true,
-    match: [/^\+225[0-9]{10}$/, 'Format de numéro ivoirien invalide (+225XXXXXXXXXX)']
+    match: [/^\+225[0-9]{10}$/, 'Format de numéro ivoirien invalide (+225XXXXXXXXXX)'],
+    index: true
   },
   fullName: {
     type: String,
@@ -58,7 +59,6 @@ const userSchema = new mongoose.Schema({
 });
 
 // Index pour optimiser les recherches
-userSchema.index({ phone: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ createdAt: -1 });
 

@@ -31,10 +31,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Connexion à MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tombola_cote_ivoire', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tombola_cote_ivoire')
 .then(() => console.log('✅ Connexion à MongoDB réussie'))
 .catch(err => console.error('❌ Erreur de connexion MongoDB:', err));
 
