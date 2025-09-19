@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: tombola-backend-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        value: mongodb+srv://tombola-admin:sqXCgnsiWbhjW6tF@tombola.tl56th9.mongodb.net/?retryWrites=true&w=majority&appName=tombola
+      - key: JWT_SECRET
+        value: super-secret-jwt-key-for-tombola-2024-production
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: ADMIN_PHONE
+        value: +2250703909441
+      - key: ADMIN_PASSWORD
+        value: Admin123!

@@ -1,0 +1,20 @@
+{
+  "name": "tombola-cote-ivoire",
+  "version": "1.0.0",
+  "description": "Plateforme de tombola en ligne sécurisée pour la Côte d'Ivoire",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "install-all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "keywords": ["tombola", "cote-ivoire", "wave", "orange-money", "lottery"],
+  "author": "Votre Nom",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
