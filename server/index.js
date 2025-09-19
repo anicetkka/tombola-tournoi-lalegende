@@ -7,8 +7,7 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware de sécurité
-app.use(helmet());
+// CORS doit être configuré AVANT helmet
 app.use(cors({
   origin: [
     'https://tombolalalegende.web.app', 
@@ -19,6 +18,12 @@ app.use(cors({
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Middleware de sécurité
+app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false
 }));
 
 // Rate limiting

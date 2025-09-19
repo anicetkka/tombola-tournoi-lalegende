@@ -151,28 +151,38 @@ export const AuthProvider = ({ children }) => {
   // Fonction de connexion
   const login = async (credentials) => {
     try {
+      console.log('🚀 DÉBUT de la fonction login');
       dispatch({ type: authActions.LOGIN_START });
       
       console.log('🔐 Tentative de connexion avec:', credentials);
       console.log('🌐 URL API:', API_BASE_URL);
       
+      console.log('📡 Envoi de la requête...');
       const response = await api.post('/auth/login', credentials);
-      console.log('✅ Réponse de connexion:', response.data);
+      console.log('✅ Réponse reçue:', response.data);
       
       const { token, user } = response.data;
+      console.log('🔑 Token reçu:', token ? 'OUI' : 'NON');
+      console.log('👤 Utilisateur reçu:', user);
       
+      console.log('💾 Sauvegarde dans localStorage...');
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
+      console.log('🔄 Mise à jour du state...');
       dispatch({
         type: authActions.LOGIN_SUCCESS,
         payload: { token, user }
       });
       
+      console.log('✅ État d\'authentification mis à jour');
+      console.log('🎉 Connexion réussie, retour de la fonction');
       toast.success('Connexion réussie !');
-      return { success: true };
+      return { success: true, user };
     } catch (error) {
-      console.error('❌ Erreur de connexion:', error);
+      console.error('❌ ERREUR dans la fonction login:', error);
+      console.error('❌ Type d\'erreur:', error.name);
+      console.error('❌ Message d\'erreur:', error.message);
       console.error('❌ Détails de l\'erreur:', error.response?.data);
       const message = error.response?.data?.message || 'Erreur de connexion';
       dispatch({ type: authActions.LOGIN_FAILURE });

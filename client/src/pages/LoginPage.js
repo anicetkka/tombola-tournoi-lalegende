@@ -83,24 +83,42 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('📝 DÉBUT handleSubmit');
     
     if (!validateForm()) {
+      console.log('❌ Validation échouée');
       return;
     }
 
+    console.log('✅ Validation réussie, démarrage du loading');
     setIsLoading(true);
     
     const formattedPhone = formatPhoneNumber(formData.phone);
+    console.log('📞 Téléphone formaté:', formattedPhone);
     
+    console.log('🔐 Appel de la fonction login...');
     const result = await login({
       phone: formattedPhone,
       password: formData.password
     });
 
+    console.log('📋 Résultat de login:', result);
     setIsLoading(false);
 
     if (result.success) {
-      navigate(from, { replace: true });
+      console.log('✅ Connexion réussie, redirection...');
+      // Redirection basée sur le rôle de l'utilisateur
+      const userRole = result.user?.role;
+      console.log('👤 Rôle utilisateur:', userRole);
+      if (userRole === 'admin') {
+        console.log('🔀 Redirection vers /admin');
+        navigate('/admin', { replace: true });
+      } else {
+        console.log('🔀 Redirection vers /user/profile');
+        navigate('/user/profile', { replace: true });
+      }
+    } else {
+      console.log('❌ Connexion échouée:', result.error);
     }
   };
 
