@@ -8,7 +8,53 @@ const { validateObjectId, validatePagination } = require('../middleware/validati
 
 const router = express.Router();
 
-// Toutes les routes admin nécessitent une authentification et des droits admin
+// Route spéciale pour promouvoir un utilisateur en admin (sans authentification)
+router.post('/promote-user', async (req, res) => {
+  try {
+    const { phone, secretKey } = req.body;
+    
+    // Vérifier la clé secrète
+    if (secretKey !== 'PROMOTE_ADMIN_2024') {
+      return res.status(401).json({
+        error: 'Clé secrète invalide',
+        message: 'Accès non autorisé'
+      });
+    }
+    
+    // Trouver l'utilisateur
+    const user = await User.findOne({ phone });
+    if (!user) {
+      return res.status(404).json({
+        error: 'Utilisateur non trouvé',
+        message: 'Aucun utilisateur trouvé avec ce numéro de téléphone'
+      });
+    }
+    
+    // Promouvoir en admin
+    user.role = 'admin';
+    user.isActive = true;
+    await user.save();
+    
+    res.json({
+      message: 'Utilisateur promu administrateur avec succès',
+      user: {
+        phone: user.phone,
+        fullName: user.fullName,
+        role: user.role,
+        isActive: user.isActive
+      }
+    });
+    
+  } catch (error) {
+    console.error('Erreur lors de la promotion:', error);
+    res.status(500).json({
+      error: 'Erreur serveur',
+      message: 'Erreur lors de la promotion de l\'utilisateur'
+    });
+  }
+});
+
+// Toutes les autres routes admin nécessitent une authentification et des droits admin
 router.use(authenticateToken);
 router.use(requireAdmin);
 
