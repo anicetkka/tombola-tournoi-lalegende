@@ -27,9 +27,7 @@ const validateRegister = [
     .withMessage('Le nom doit contenir entre 2 et 100 caractères'),
   body('password')
     .isLength({ min: 6 })
-    .withMessage('Le mot de passe doit contenir au moins 6 caractères')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre'),
+    .withMessage('Le mot de passe doit contenir au moins 6 caractères'),
   handleValidationErrors
 ];
 
@@ -121,9 +119,7 @@ const validatePasswordReset = [
     .withMessage('Format de numéro ivoirien invalide'),
   body('newPassword')
     .isLength({ min: 6 })
-    .withMessage('Le mot de passe doit contenir au moins 6 caractères')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre'),
+    .withMessage('Le mot de passe doit contenir au moins 6 caractères'),
   handleValidationErrors
 ];
 

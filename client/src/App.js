@@ -20,6 +20,8 @@ import AdminParticipations from './pages/admin/AdminParticipations';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminStats from './pages/admin/AdminStats';
 import AdminContact from './pages/admin/AdminContact';
+import TestLogin from './pages/TestLogin';
+import DirectLogin from './pages/DirectLogin';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
@@ -44,6 +46,10 @@ function App() {
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
             </Route>
+
+            {/* Routes de test */}
+            <Route path="/test-login" element={<TestLogin />} />
+            <Route path="/direct-login" element={<DirectLogin />} />
 
             {/* Routes protégées utilisateur */}
             <Route path="/user" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>

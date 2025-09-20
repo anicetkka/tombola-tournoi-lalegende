@@ -106,16 +106,23 @@ const LoginPage = () => {
     setIsLoading(false);
 
     if (result.success) {
-      console.log('✅ Connexion réussie, redirection...');
-      // Redirection basée sur le rôle de l'utilisateur
+      console.log('✅ Connexion réussie !');
+      console.log('👤 Utilisateur reçu:', result.user);
+      
+      // Afficher un message de succès
+      toast.success('Connexion réussie ! Redirection en cours...');
+      
+      // Redirection simple et directe
       const userRole = result.user?.role;
       console.log('👤 Rôle utilisateur:', userRole);
+      
       if (userRole === 'admin') {
         console.log('🔀 Redirection vers /admin');
-        navigate('/admin', { replace: true });
+        // Utiliser window.location pour une redirection complète
+        window.location.href = '/admin';
       } else {
         console.log('🔀 Redirection vers /user/profile');
-        navigate('/user/profile', { replace: true });
+        window.location.href = '/user/profile';
       }
     } else {
       console.log('❌ Connexion échouée:', result.error);
