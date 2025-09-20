@@ -211,7 +211,7 @@ const HomePage = () => {
                 Payez directement via votre compte Orange Money
               </p>
               <div className="text-sm text-gray-500">
-                Compte: +225 01 234 5678
+                Compte: +2250703909441
               </div>
             </div>
             
@@ -226,7 +226,7 @@ const HomePage = () => {
                 Payez facilement via votre compte Wave
               </p>
               <div className="text-sm text-gray-500">
-                Compte: +225 01 234 5678
+                Compte: +2250703909441
               </div>
             </div>
           </div>

@@ -297,7 +297,7 @@ const TombolaDetailPage = () => {
                     </div>
                     <h4 className="font-medium text-gray-900">Orange Money</h4>
                   </div>
-                  <p className="text-sm text-gray-600">+225 01 234 5678</p>
+                  <p className="text-sm text-gray-600">+2250703909441</p>
                 </div>
                 
                 <div className="p-4 bg-blue-50 rounded-lg">
@@ -307,7 +307,7 @@ const TombolaDetailPage = () => {
                     </div>
                     <h4 className="font-medium text-gray-900">Wave</h4>
                   </div>
-                  <p className="text-sm text-gray-600">+225 01 234 5678</p>
+                  <p className="text-sm text-gray-600">+2250703909441</p>
                 </div>
               </div>
               

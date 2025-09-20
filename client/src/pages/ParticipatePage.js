@@ -451,7 +451,7 @@ const ParticipatePage = () => {
                     </div>
                     <span className="font-medium text-gray-900">Orange Money</span>
                   </div>
-                  <p className="text-sm text-gray-600">+225 01 234 5678</p>
+                  <p className="text-sm text-gray-600">+2250703909441</p>
                 </div>
                 
                 <div className="p-3 bg-blue-50 rounded-lg">
@@ -461,7 +461,7 @@ const ParticipatePage = () => {
                     </div>
                     <span className="font-medium text-gray-900">Wave</span>
                   </div>
-                  <p className="text-sm text-gray-600">+225 01 234 5678</p>
+                  <p className="text-sm text-gray-600">+2250703909441</p>
                 </div>
               </div>
             </div>

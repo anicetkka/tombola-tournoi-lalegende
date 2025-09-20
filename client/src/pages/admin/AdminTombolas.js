@@ -20,8 +20,18 @@ const AdminTombolas = () => {
     maxParticipants: '',
     endDate: ''
   });
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    description: '',
+    prizeAmount: '',
+    participationPrice: '',
+    maxParticipants: '',
+    endDate: ''
+  });
   const [formErrors, setFormErrors] = useState({});
+  const [editFormErrors, setEditFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     fetchTombolas();
@@ -63,7 +73,7 @@ const AdminTombolas = () => {
   };
 
   const canEdit = (tombola) => {
-    return !tombola.isDrawn && tombola.totalParticipations === 0;
+    return !tombola.isDrawn;
   };
 
   const canDelete = (tombola) => {
@@ -119,6 +129,22 @@ const AdminTombolas = () => {
     // Effacer l'erreur du champ modifié
     if (formErrors[name]) {
       setFormErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Effacer l'erreur du champ modifié
+    if (editFormErrors[name]) {
+      setEditFormErrors(prev => ({
         ...prev,
         [name]: ''
       }));
@@ -211,9 +237,109 @@ const AdminTombolas = () => {
     setFormErrors({});
   };
 
+  const resetEditForm = () => {
+    setEditFormData({
+      title: '',
+      description: '',
+      prizeAmount: '',
+      participationPrice: '',
+      maxParticipants: '',
+      endDate: ''
+    });
+    setEditFormErrors({});
+  };
+
   const closeModal = () => {
     setShowCreateModal(false);
     resetForm();
+  };
+
+  const openEditModal = (tombola) => {
+    setEditingTombola(tombola);
+    setEditFormData({
+      title: tombola.title,
+      description: tombola.description,
+      prizeAmount: tombola.prizeAmount,
+      participationPrice: tombola.participationPrice,
+      maxParticipants: tombola.maxParticipants || '',
+      endDate: tombola.endDate ? new Date(tombola.endDate).toISOString().slice(0, 16) : ''
+    });
+    setEditFormErrors({});
+  };
+
+  const closeEditModal = () => {
+    setEditingTombola(null);
+    resetEditForm();
+  };
+
+  const validateEditForm = () => {
+    const errors = {};
+
+    if (!editFormData.title.trim()) {
+      errors.title = 'Le titre est requis';
+    }
+
+    if (!editFormData.description.trim()) {
+      errors.description = 'La description est requise';
+    }
+
+    if (!editFormData.prizeAmount || editFormData.prizeAmount < 100) {
+      errors.prizeAmount = 'Le montant de la cagnotte doit être d\'au moins 100 FCFA';
+    }
+
+    if (!editFormData.participationPrice || editFormData.participationPrice < 50) {
+      errors.participationPrice = 'Le prix de participation doit être d\'au moins 50 FCFA';
+    }
+
+    if (editFormData.maxParticipants && editFormData.maxParticipants < 2) {
+      errors.maxParticipants = 'Le nombre minimum de participants est 2';
+    }
+
+    if (!editFormData.endDate) {
+      errors.endDate = 'La date de fin est requise';
+    } else {
+      const endDate = new Date(editFormData.endDate);
+      const now = new Date();
+      if (endDate <= now) {
+        errors.endDate = 'La date de fin doit être dans le futur';
+      }
+    }
+
+    setEditFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateEditForm()) {
+      return;
+    }
+
+    try {
+      setIsEditing(true);
+      const response = await api.put(`/tombolas/${editingTombola.id}`, editFormData);
+      
+      // Mettre à jour la tombola dans la liste
+      setTombolas(tombolas.map(t => 
+        t.id === editingTombola.id 
+          ? { ...t, ...response.data.tombola }
+          : t
+      ));
+      
+      toast.success('Tombola mise à jour avec succès !');
+      closeEditModal();
+      
+    } catch (err) {
+      console.error('Erreur lors de la mise à jour:', err);
+      if (err.response?.data?.errors) {
+        setEditFormErrors(err.response.data.errors);
+      } else {
+        toast.error('Erreur lors de la mise à jour de la tombola');
+      }
+    } finally {
+      setIsEditing(false);
+    }
   };
 
   if (loading) {
@@ -345,7 +471,7 @@ const AdminTombolas = () => {
                 
                 {canEdit(tombola) && (
                   <button
-                    onClick={() => setEditingTombola(tombola)}
+                    onClick={() => openEditModal(tombola)}
                     className="btn btn-outline btn-sm"
                   >
                     <Edit className="w-4 h-4 mr-1" />
@@ -548,28 +674,176 @@ const AdminTombolas = () => {
         </div>
       )}
 
-      {/* Modal d'édition (placeholder) */}
+      {/* Modal d'édition */}
       {editingTombola && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Modifier la tombola</h3>
-            <p className="text-gray-600 mb-4">
-              Le formulaire de modification sera implémenté ici.
-            </p>
-            <div className="flex space-x-3">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h3 className="text-lg font-semibold text-gray-900">Modifier la tombola</h3>
               <button
-                onClick={() => setEditingTombola(null)}
-                className="btn btn-outline"
+                onClick={closeEditModal}
+                className="text-gray-400 hover:text-gray-600"
               >
-                Annuler
-              </button>
-              <button
-                onClick={() => setEditingTombola(null)}
-                className="btn btn-primary"
-              >
-                Sauvegarder
+                <X className="w-6 h-6" />
               </button>
             </div>
+            
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-6">
+              {/* Titre */}
+              <div>
+                <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 mb-2">
+                  Titre de la tombola *
+                </label>
+                <input
+                  type="text"
+                  id="edit-title"
+                  name="title"
+                  value={editFormData.title}
+                  onChange={handleEditInputChange}
+                  placeholder="Ex: Tombola Spéciale Noël"
+                  className={`input ${editFormErrors.title ? 'input-error' : ''}`}
+                  disabled={isEditing}
+                />
+                {editFormErrors.title && (
+                  <p className="mt-1 text-sm text-red-600">{editFormErrors.title}</p>
+                )}
+              </div>
+
+              {/* Description */}
+              <div>
+                <label htmlFor="edit-description" className="block text-sm font-medium text-gray-700 mb-2">
+                  Description *
+                </label>
+                <textarea
+                  id="edit-description"
+                  name="description"
+                  value={editFormData.description}
+                  onChange={handleEditInputChange}
+                  placeholder="Décrivez la tombola, les conditions de participation..."
+                  rows={4}
+                  className={`input ${editFormErrors.description ? 'input-error' : ''}`}
+                  disabled={isEditing}
+                />
+                {editFormErrors.description && (
+                  <p className="mt-1 text-sm text-red-600">{editFormErrors.description}</p>
+                )}
+              </div>
+
+              {/* Montant de la cagnotte */}
+              <div>
+                <label htmlFor="edit-prizeAmount" className="block text-sm font-medium text-gray-700 mb-2">
+                  Montant de la cagnotte (FCFA) *
+                </label>
+                <input
+                  type="number"
+                  id="edit-prizeAmount"
+                  name="prizeAmount"
+                  value={editFormData.prizeAmount}
+                  onChange={handleEditInputChange}
+                  placeholder="10000"
+                  min="100"
+                  className={`input ${editFormErrors.prizeAmount ? 'input-error' : ''}`}
+                  disabled={isEditing}
+                />
+                {editFormErrors.prizeAmount && (
+                  <p className="mt-1 text-sm text-red-600">{editFormErrors.prizeAmount}</p>
+                )}
+              </div>
+
+              {/* Prix de participation */}
+              <div>
+                <label htmlFor="edit-participationPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                  Prix de participation (FCFA) *
+                </label>
+                <input
+                  type="number"
+                  id="edit-participationPrice"
+                  name="participationPrice"
+                  value={editFormData.participationPrice}
+                  onChange={handleEditInputChange}
+                  placeholder="500"
+                  min="50"
+                  className={`input ${editFormErrors.participationPrice ? 'input-error' : ''}`}
+                  disabled={isEditing}
+                />
+                {editFormErrors.participationPrice && (
+                  <p className="mt-1 text-sm text-red-600">{editFormErrors.participationPrice}</p>
+                )}
+              </div>
+
+              {/* Nombre maximum de participants */}
+              <div>
+                <label htmlFor="edit-maxParticipants" className="block text-sm font-medium text-gray-700 mb-2">
+                  Nombre maximum de participants (optionnel)
+                </label>
+                <input
+                  type="number"
+                  id="edit-maxParticipants"
+                  name="maxParticipants"
+                  value={editFormData.maxParticipants}
+                  onChange={handleEditInputChange}
+                  placeholder="100"
+                  min="2"
+                  className={`input ${editFormErrors.maxParticipants ? 'input-error' : ''}`}
+                  disabled={isEditing}
+                />
+                {editFormErrors.maxParticipants && (
+                  <p className="mt-1 text-sm text-red-600">{editFormErrors.maxParticipants}</p>
+                )}
+                <p className="mt-1 text-xs text-gray-500">
+                  Laissez vide pour un nombre illimité
+                </p>
+              </div>
+
+              {/* Date et heure de fin */}
+              <div>
+                <label htmlFor="edit-endDate" className="block text-sm font-medium text-gray-700 mb-2">
+                  Date et heure de fin *
+                </label>
+                <input
+                  type="datetime-local"
+                  id="edit-endDate"
+                  name="endDate"
+                  value={editFormData.endDate}
+                  onChange={handleEditInputChange}
+                  min={new Date().toISOString().slice(0, 16)}
+                  className={`input ${editFormErrors.endDate ? 'input-error' : ''}`}
+                  disabled={isEditing}
+                />
+                {editFormErrors.endDate && (
+                  <p className="mt-1 text-sm text-red-600">{editFormErrors.endDate}</p>
+                )}
+                <p className="mt-1 text-xs text-gray-500">
+                  Vous pouvez modifier la date et l'heure de fin même si la tombola a déjà des participants
+                </p>
+              </div>
+
+              {/* Boutons */}
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="btn btn-outline flex-1"
+                  disabled={isEditing}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary flex-1"
+                  disabled={isEditing}
+                >
+                  {isEditing ? (
+                    <div className="flex items-center justify-center">
+                      <div className="loading-spinner w-4 h-4 mr-2"></div>
+                      Mise à jour...
+                    </div>
+                  ) : (
+                    'Mettre à jour'
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
